@@ -37,10 +37,10 @@ public class WordCountDriver {
         job.setNumReduceTasks(3);
 
         // 6 设置输入和输出路径
-//        FileInputFormat.setInputPaths(job, new Path(args[0]));
-        FileInputFormat.setInputPaths(job, new Path("D:\\Temp\\hello.txt"));
-//        FileOutputFormat.setOutputPath(job, new Path(args[1]));
-        FileOutputFormat.setOutputPath(job, new Path("D:\\Temp\\hello_output"));
+        FileInputFormat.setInputPaths(job, new Path(args[0]));
+//        FileInputFormat.setInputPaths(job, new Path("D:\\Temp\\hello.txt"));
+        FileOutputFormat.setOutputPath(job, new Path(args[1]));
+//        FileOutputFormat.setOutputPath(job, new Path("D:\\Temp\\hello_output"));
 
         // 7 提交job
         boolean result = job.waitForCompletion(true);
