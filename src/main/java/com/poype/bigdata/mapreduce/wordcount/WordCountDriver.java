@@ -32,6 +32,10 @@ public class WordCountDriver {
         job.setOutputKeyClass(Text.class);
         job.setOutputValueClass(IntWritable.class);
 
+        // 设置reduce task的数量，有几个reduce task，就会对应几个结果输出文件
+        // part-r-00000, part-r-00001, part-r-00002 这里reduce的结果对应这三个文件
+        job.setNumReduceTasks(3);
+
         // 6 设置输入和输出路径
 //        FileInputFormat.setInputPaths(job, new Path(args[0]));
         FileInputFormat.setInputPaths(job, new Path("D:\\Temp\\hello.txt"));
