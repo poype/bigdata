@@ -40,3 +40,8 @@ public class FlowBean implements Writable {
         this.downFlow = dataInput.readLong();
     }
 }
+
+/**
+ * 如果自定义的bean要作为map task的输出key，则还需要实现Comparable接口，
+ * 因为MapReduce框架中的Shuffle过程会根据Mapper的输出key对结果进行排序，所以要求key必须能支持排序。
+ */
