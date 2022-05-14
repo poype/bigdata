@@ -1,5 +1,6 @@
 package com.poype.bigdata.mapreduce.serialize;
 
+import com.poype.bigdata.mapreduce.partitioner.ProvincePartitioner;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.io.Text;
@@ -31,7 +32,13 @@ public class FlowDriver {
         job.setOutputKeyClass(Text.class);
         job.setOutputValueClass(Text.class);
 
-        job.setNumReduceTasks(2);
+        // 指定自定义分区器
+        job.setPartitionerClass(ProvincePartitioner.class);
+
+        // 注意reducer的数量要跟partitioner的逻辑匹配，否则会报错
+        // 例如partitioner产生有5个值，但如果只有4个reducer就会报错
+        // 当reducer的数量是1的时候，则会使用MR自定义的partitioner，即分区的值一直是0
+        job.setNumReduceTasks(5);
 
         // 6 设置输入和输出路径
 //        FileInputFormat.setInputPaths(job, new Path(args[0]));
