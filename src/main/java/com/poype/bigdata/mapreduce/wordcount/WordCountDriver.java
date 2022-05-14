@@ -42,6 +42,9 @@ public class WordCountDriver {
         // part-r-00000, part-r-00001, part-r-00002 这里reduce的结果对应这三个文件
         job.setNumReduceTasks(1);
 
+        // 指定需要使用combiner
+        job.setCombinerClass(WordCountCombiner.class);
+
         // 6 设置输入和输出路径
 //        FileInputFormat.setInputPaths(job, new Path(args[0]));
         FileInputFormat.setInputPaths(job, new Path("D:\\Temp\\small_file"));
