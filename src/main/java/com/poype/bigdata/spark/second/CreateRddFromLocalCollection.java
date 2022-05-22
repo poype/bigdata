@@ -3,8 +3,10 @@ package com.poype.bigdata.spark.second;
 import org.apache.spark.SparkConf;
 import org.apache.spark.api.java.JavaRDD;
 import org.apache.spark.api.java.JavaSparkContext;
+import org.apache.spark.api.java.function.VoidFunction;
 
 import java.util.Arrays;
+import java.util.Iterator;
 
 public class CreateRddFromLocalCollection {
 
@@ -15,12 +17,22 @@ public class CreateRddFromLocalCollection {
 
         JavaSparkContext sc = new JavaSparkContext(conf);
 
-        Integer[] numArray = {1, 2, 3, 4, 5, 6, 7, 8, 9};
+        Integer[] numArray = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21};
 
         // 将本地集合对象转换成分布式RDD，设置分片数是3
         JavaRDD<Integer> dataRdd = sc.parallelize(Arrays.asList(numArray), 3);
 
         System.out.println("分区数：" + dataRdd.getNumPartitions());
+
+        // 查看所有数字是如何在各个partition之间分配的
+        dataRdd.foreachPartition((VoidFunction<Iterator<Integer>>) nums -> {
+            while (nums.hasNext()) {
+                Integer num = nums.next();
+                System.out.println(num);
+            }
+            System.out.println("---------------------------------");
+        });
+
         // collect把每个partition中的数据都发送到Driver并构成一个本地集合List对象，即将分布式RDD转换成本地集合对象
         System.out.println(dataRdd.collect());
     }
