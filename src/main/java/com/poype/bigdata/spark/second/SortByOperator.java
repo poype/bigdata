@@ -1,11 +1,15 @@
 package com.poype.bigdata.spark.second;
 
 import org.apache.spark.SparkConf;
+import org.apache.spark.api.java.JavaPairRDD;
 import org.apache.spark.api.java.JavaRDD;
 import org.apache.spark.api.java.JavaSparkContext;
 import org.apache.spark.api.java.function.Function;
+import scala.Tuple2;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 public class SortByOperator {
     public static void main(String[] args) {
@@ -25,5 +29,15 @@ public class SortByOperator {
                 dataRdd.sortBy((Function<Integer, Integer>) num -> num, true, 3);
 
         System.out.println(sortedRdd.collect());
+
+        List<Tuple2<String, Integer>> fruitList = new ArrayList<>();
+        fruitList.add(new Tuple2<>("orange", 3));
+        fruitList.add(new Tuple2<>("apple", 2));
+        fruitList.add(new Tuple2<>("banana", 1));
+
+        JavaPairRDD<String, Integer> fruitRdd = sc.parallelizePairs(fruitList);
+        JavaPairRDD<String, Integer> sortedFruitRdd = fruitRdd.sortByKey();
+        // [(apple,2), (banana,1), (orange,3)]
+        System.out.println(sortedFruitRdd.collect());
     }
 }
