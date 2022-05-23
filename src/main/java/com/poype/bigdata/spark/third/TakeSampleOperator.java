@@ -22,7 +22,9 @@ public class TakeSampleOperator {
 
         // takeSample有两个参数，第一个参数表示是否允许多次取相同位置上的元素，第二个参数是元素个数
         // 从RDD中随机取出5个元素，且同一个位置上的元素最多只能取一次
-        List<Integer> sampleList = dataRdd.takeSample(false, 5);
+        List<Integer> sampleList = dataRdd.takeSample(false, 5, 99);
+        // takeSample算子还能接受一个种子参数，如果不提供，那么它会使用一个随机数作为种子
+        // 种子相同，每次取出的随机数就相同。所以通常不设置这个参数，让其使用随机的种子
 
         System.out.println(sampleList);
     }
