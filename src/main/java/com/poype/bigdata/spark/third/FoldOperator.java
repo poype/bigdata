@@ -28,5 +28,17 @@ public class FoldOperator {
 
         // 95
         System.out.println(sum);
+
+        // first算子取第一个元素
+        System.out.println("first:" + dataRdd.first());
+
+        // task 5: [1, 2, 3, 4, 5]  take算子取前5个元素
+        System.out.println("take 5: " + dataRdd.take(5));
+
+        // top 3: [10, 9, 8]  top算子从RDD中获取最大的3个元素
+        System.out.println("top 3: " + dataRdd.top(3));
+
+        // count: 10   count算子计算RDD中有多少条数据
+        System.out.println("count: " + dataRdd.count());
     }
 }
