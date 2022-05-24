@@ -57,5 +57,9 @@ public class PartitionByOperator {
         // 自定义分区后的状态，所有的bbb都到了第1号分区
         // [[(aaa,1), (aaa,1)], [(bbb,1), (bbb,1), (bbb,1), (bbb,1)], [(ccc,1), (ccc,1)]]
         System.out.println(partitionRdd.glom().collect());
+
+        // repartition调正分区数量为5，但分区规则不变
+        // [[(bbb,1)], [(aaa,1)], [(aaa,1), (bbb,1)], [(bbb,1), (ccc,1)], [(bbb,1), (ccc,1)]]
+        System.out.println(wordListRdd.repartition(5).glom().collect());
     }
 }
