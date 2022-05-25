@@ -11,7 +11,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
-import java.util.concurrent.TimeUnit;
 
 public class RddHandleProcess {
 
@@ -59,3 +58,6 @@ public class RddHandleProcess {
         rdd2.unpersist();
     }
 }
+/**
+ * persist是把rdd缓存到executor所在服务器的内存或硬盘上，所以缓存数据是不安全的，有丢失的风险
+ */
