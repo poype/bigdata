@@ -5,6 +5,7 @@ import org.apache.spark.api.java.JavaPairRDD;
 import org.apache.spark.api.java.JavaRDD;
 import org.apache.spark.api.java.JavaSparkContext;
 import org.apache.spark.api.java.function.Function2;
+import org.apache.spark.storage.StorageLevel;
 import scala.Tuple2;
 
 import java.util.Arrays;
@@ -27,6 +28,9 @@ public class PracticeStudy {
             return Arrays.asList(lineArray);
         });
 
+        // 由于多次用到lineRdd，所以将它缓存
+        lineRdd.persist(StorageLevel.MEMORY_ONLY());
+
         JavaPairRDD<String, Integer> searchWordRdd = lineRdd.mapToPair(line -> new Tuple2<>(line.get(2), 1));
 
         JavaPairRDD<String, Integer> wordCountRdd =
@@ -42,5 +46,19 @@ public class PracticeStudy {
 
         // [(scala,2310), (hadoop,2268), (博学谷,2002), (传智汇,1918), (itheima,1680)]
         System.out.println(top5World);
+
+        // 求搜索的高峰时段，按小时计
+        JavaPairRDD<String, Integer> hourRdd = lineRdd.mapToPair(line -> {
+            String time = line.get(0);
+            String hour = time.split(":")[0];
+            Tuple2<String, Integer> hourTuple = new Tuple2<>(hour, 1);
+            return hourTuple;
+        });
+
+        JavaPairRDD<String, Integer> hourCountRdd = hourRdd.reduceByKey(Integer::sum);
+
+        // [(20,3479), (23,3087), (21,2989), (22,2499), (01,1365)]
+        System.out.println(hourCountRdd.top(5,
+                (SerializableComparator<Tuple2<String, Integer>>) (o1, o2) -> o1._2 - o2._2));
     }
 }
