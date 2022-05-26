@@ -3,6 +3,7 @@ package com.poype.bigdata.spark.seventh;
 import org.apache.spark.SparkConf;
 import org.apache.spark.api.java.JavaRDD;
 import org.apache.spark.api.java.JavaSparkContext;
+import org.apache.spark.broadcast.Broadcast;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -25,6 +26,10 @@ public class BroadCastStudy {
         studentMap.put("004", "星辰");
         studentMap.put("005", "名博");
 
+        // 构建广播变量，广播变量以进程为单位分发给所有的executor，而不是以task线程为单位
+        // 一个executor进程中包含多个task线程，广播变量只会发送一次给进程，进程中的所有task线程就都能获取到这个变量了
+        Broadcast<Map<String, String>> studentMapBroadcast = sc.broadcast(studentMap);
+
         List<Map<String, String>> scoreList = new ArrayList<>();
         scoreList.add(createScore("001", "语文", "88"));
         scoreList.add(createScore("002", "语文", "87"));
@@ -42,7 +47,8 @@ public class BroadCastStudy {
         // 用学生的名字替换ID, studentMap对象会发送给所有的partition，即发送给所有的task线程
         JavaRDD<Map<String, String>> resultRdd = scoreListRdd.map(scoreObj -> {
             String id = scoreObj.get("id");
-            String studentName = studentMap.get(id);
+            // broadcast.value引用广播变量
+            String studentName = studentMapBroadcast.value().get(id);
             scoreObj.remove("id");
             scoreObj.put("name", studentName);
             return scoreObj;
