@@ -5,11 +5,13 @@ import org.apache.spark.api.java.JavaPairRDD;
 import org.apache.spark.api.java.JavaRDD;
 import org.apache.spark.api.java.JavaSparkContext;
 import org.apache.spark.broadcast.Broadcast;
+import org.apache.spark.util.LongAccumulator;
 import scala.Tuple2;
 
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.concurrent.TimeUnit;
 
 public class PracticeStudy {
 
@@ -30,6 +32,8 @@ public class PracticeStudy {
 
         Broadcast<Set<String>> specialCharSetBroadcast = sc.broadcast(specialCharSet);
 
+        LongAccumulator specialCharCounter = sc.sc().longAccumulator();
+
         JavaRDD<String> fileRdd = sc.textFile("./src/main/resources/accumulator_broadcast_data.txt", 3);
 
         JavaRDD<String> wordRdd = fileRdd.flatMap(line -> {
@@ -45,6 +49,8 @@ public class PracticeStudy {
                 return false;
             }
             if (specialCharSetBroadcast.value().contains(word)) {
+                // 如果是特殊字符，就加1
+                specialCharCounter.add(1L);
                 return false;
             }
             return true;
@@ -57,9 +63,11 @@ public class PracticeStudy {
         // [(sql,2), (hadoop,3), (hdfs,2), (spark,11), (hive,6), (mapreduce,4)]
         System.out.println(normalWordCountRdd.collect());
 
-        JavaRDD<String> specialCharRdd = wordRdd.filter(specialCharSetBroadcast.value()::contains);
+//        JavaRDD<String> specialCharRdd = wordRdd.filter(specialCharSetBroadcast.value()::contains);
 
         // 特殊字符的个数：8
-        System.out.println("特殊字符的个数：" + specialCharRdd.count());
+        System.out.println("特殊字符的个数：" + specialCharCounter.value());
+
+        TimeUnit.MILLISECONDS.sleep(999999);
     }
 }
