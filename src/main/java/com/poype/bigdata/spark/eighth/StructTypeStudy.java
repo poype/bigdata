@@ -44,6 +44,17 @@ public class StructTypeStudy {
         dataset.createTempView("student");
 
         sparkSession.sql("select * from student where age < 20").show();
+
+        // 第一个参数表示显示的行数，默认20
+        // 第二个参数表示是否对列进行截断，如果一个列超过20个字符，后续的内容不显示
+        dataset.show(2, false);
+        // +---+-------+
+        // |age|name   |
+        // +---+-------+
+        // | 29|Michael|
+        // | 30|Andy   |
+        // +---+-------+
+        // only showing top 2 rows
     }
 }
 
