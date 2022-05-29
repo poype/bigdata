@@ -98,7 +98,9 @@ public class MoviePractice {
         Dataset<Row> result =
                 sparkSession.sql("SELECT * FROM movie_score WHERE score > (SELECT AVG(score) FROM movie_score)");
 
-        result.write().mode("overwrite").format("csv").option("sep", "-").save("./src/main/resources/sql/output/result2.data");
+//        result.write().mode("overwrite").format("csv").option("sep", "-").save("./src/main/resources/sql/output/result2.data");
+
+        result.write().mode("overwrite").format("json").save("./src/main/resources/sql/output/result3.data");
 
 //        TimeUnit.MILLISECONDS.sleep(999999);
     }
