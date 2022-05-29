@@ -36,5 +36,53 @@ public class CreateDatasetFromCsvFile {
         // |Alice|   9|     null|
         // +-----+----+---------+
         dataset.show();
+
+        // +-----+
+        // | name|
+        // +-----+
+        // |Jorge|
+        // |  Bob|
+        // |  Ani|
+        // | Lily|
+        // |  Put|
+        // |Alice|
+        // +-----+
+        dataset.select("name").show();
+
+        // +-----+---------+
+        // | name|      job|
+        // +-----+---------+
+        // |Jorge|Developer|
+        // |  Bob|Developer|
+        // |  Ani|Developer|
+        // | Lily|  Manager|
+        // |  Put|Developer|
+        // +-----+---------+
+        dataset.select("name", "job").show();
+
+        // +----+---+---------+
+        // |name|age|      job|
+        // +----+---+---------+
+        // | Bob| 32|Developer|
+        // +----+---+---------+
+        dataset.filter("age > 30").show();
+
+        // +----+---+---------+
+        // |name|age|      job|
+        // +----+---+---------+
+        // | Bob| 32|Developer|
+        // +----+---+---------+
+        dataset.where("age > 30").show();
+
+        // where 和 filter的作用是相同的，可以互相替换使用
+
+        // +---------+--------+
+        // |      job|avg(age)|
+        // +---------+--------+
+        // |     null|     9.0|
+        // |Developer|    21.0|
+        // |  Manager|     9.4|
+        // +---------+--------+
+        dataset.groupBy("job").avg("age").show();
     }
 }
