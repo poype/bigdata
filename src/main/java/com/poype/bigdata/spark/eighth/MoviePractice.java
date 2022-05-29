@@ -95,8 +95,11 @@ public class MoviePractice {
 //
 //        sparkSession.sql("SELECT * FROM movie_score where score > " + avgValue).show();
 //
-        sparkSession.sql("SELECT * FROM movie_score WHERE score > (SELECT AVG(score) FROM movie_score)").show();
+        Dataset<Row> result =
+                sparkSession.sql("SELECT * FROM movie_score WHERE score > (SELECT AVG(score) FROM movie_score)");
 
-        TimeUnit.MILLISECONDS.sleep(999999);
+        result.write().mode("overwrite").format("csv").option("sep", "-").save("./src/main/resources/sql/output/result2.data");
+
+//        TimeUnit.MILLISECONDS.sleep(999999);
     }
 }
