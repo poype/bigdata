@@ -45,6 +45,9 @@ public class MoviePractice {
         });
 
         Dataset<Row> dataset = sparkSession.createDataFrame(movieScoreRDD, MovieScore.class);
+
+        dataset.cache();
+
         dataset.show();
 
         dataset.createTempView("movie_score");
@@ -86,11 +89,13 @@ public class MoviePractice {
 
         // 求大于平均分数的那些movie记录
         // 获取平均值的过程比较麻烦
-        Dataset<Row> avgDataset = sparkSession.sql("SELECT AVG(score) FROM movie_score");
-        JavaRDD<Row> avgRdd = avgDataset.javaRDD();
-        double avgValue = avgRdd.map(row -> row.getDouble(0)).first();
-
-        sparkSession.sql("SELECT * FROM movie_score where score > " + avgValue).show();
+//        Dataset<Row> avgDataset = sparkSession.sql("SELECT AVG(score) FROM movie_score");
+//        JavaRDD<Row> avgRdd = avgDataset.javaRDD();
+//        double avgValue = avgRdd.map(row -> row.getDouble(0)).first();
+//
+//        sparkSession.sql("SELECT * FROM movie_score where score > " + avgValue).show();
+//
+        sparkSession.sql("SELECT * FROM movie_score WHERE score > (SELECT AVG(score) FROM movie_score)").show();
 
         TimeUnit.MILLISECONDS.sleep(999999);
     }
