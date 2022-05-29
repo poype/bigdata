@@ -1,12 +1,13 @@
 package com.poype.bigdata.spark.eighth;
 
+import org.apache.spark.sql.AnalysisException;
 import org.apache.spark.sql.Dataset;
 import org.apache.spark.sql.Row;
 import org.apache.spark.sql.SparkSession;
 
 public class CreateDatasetFromJsonFile {
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws AnalysisException {
         SparkSession sparkSession = SparkSession.builder()
                 .appName("test")
                 .master("local[*]")
@@ -24,5 +25,17 @@ public class CreateDatasetFromJsonFile {
         // | 19| Justin|
         // +---+-------+
         dataset.show();
+
+        // 执行SQL需要先创建临时试图
+        dataset.createTempView("people");
+//        dataset.createOrReplaceTempView("people");
+//        dataset.createGlobalTempView("people");
+
+        // +---+------+
+        // |age|  name|
+        // +---+------+
+        // | 19|Justin|
+        // +---+------+
+        sparkSession.sql("select * from people where age < 20").show();
     }
 }
