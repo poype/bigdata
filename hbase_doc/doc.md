@@ -164,3 +164,4 @@ METADATA表的一条记录大约是1KB，假设METADATA的Tablet如果限制在1
 
 
 
+![image-20240122214530902](D:\Workspace\bigdata\hbase_doc\img\image-20240122214530902.png)
