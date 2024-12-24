@@ -1,0 +1,16 @@
+Spark本身不是为Python开发的，Spark是一个典型的JVM框架，原生应该运行Java或Scala代码。
+
+为了能让Spark运行Python的代码：
+1. 在Driver端python通过Py4j与JVM通信，相当于将Python代码翻译成Java代码。
+2. 在Executor端，会启动pyspark daemon进程，这个daemon进程是JVM与Python代码之间的通信媒介。
+   JVM Executor通过pyspark daemon将执行指令发送给Python进程。
+3. 整个流程：在Driver端，Python代码通过Py4j调用JVM Driver管理一个Spark Application的集群。
+   每个JVM的Executor收到调度指令，会通过pyspark daemon将指令转发给我们写的Python代码，真正执行RDD逻辑的是Python代码。
+
+
+Internally, each RDD is characterized by five main properties:
+1. A list of partitions
+2. A function for computing each split
+3. A list of dependencies on other RDDs
+4. Optionally, a Partitioner for key-value RDDs.
+5. Optionally, a list of preferred locations to compute each split on (e.g. block locations for an HDFS file)
