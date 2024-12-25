@@ -22,6 +22,7 @@ def map_dict_to_city_money(dict_obj: dict):
 if __name__ == "__main__":
     conf = SparkConf().setAppName("test_cache")
     sc = SparkContext(conf=conf)
+    sc.setCheckpointDir("hdfs://node1:8020/input/checkpoint")   # 开启checkpoint
 
     line_rdd = sc.textFile("hdfs://node1:8020/input/order.txt")
 
@@ -29,7 +30,8 @@ if __name__ == "__main__":
 
     # 将json转换成dict对象
     dict_rdd = json_rdd.map(convert_json_to_dict)
-    dict_rdd.cache()   # 缓存 dict_rdd, 这样 dict_rdd就不用被计算两次了
+    # dict_rdd.cache()   # 缓存 dict_rdd, 这样 dict_rdd就不用被计算两次了
+    dict_rdd.checkpoint() # 用checkpoint保存rdd
 
     city_category_rdd = dict_rdd.map(map_dict_to_city_category)
 
@@ -46,7 +48,7 @@ if __name__ == "__main__":
     print(city_sum_money_rdd.collect())
 
     # hold住job，为了看monitor
-    time.sleep(160)
+    time.sleep(60)
 
     # 不要忘记删除缓存
     dict_rdd.unpersist()
@@ -70,3 +72,9 @@ if __name__ == "__main__":
 # rdd.unpersist()   清理缓存
 
 # 无论是保存在内存还是硬盘，缓存是有可能丢失的
+
+
+# checkpoint
+# 将数据保存在HDFS更安全
+# cache是分散存储，数据是保存在各个Executor上的内存或硬盘
+# 而checkpoint是将各个分区的数据集中收集保存在HDFS
