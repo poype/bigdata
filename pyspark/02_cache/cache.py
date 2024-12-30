@@ -78,3 +78,5 @@ if __name__ == "__main__":
 # 将数据保存在HDFS更安全
 # cache是分散存储，数据是保存在各个Executor上的内存或硬盘
 # 而checkpoint是将各个分区的数据集中收集保存在HDFS
+
+# cache保留RDD继承关系，checkpoint不保留RDD之间的继承关系
